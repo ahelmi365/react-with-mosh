@@ -55,7 +55,7 @@ function App() {
         expenseList.filter((item) => item.category === filterCategory)
       );
     }
-  };
+  }; 
   return (
     <div className="main">
       <div className="container">
