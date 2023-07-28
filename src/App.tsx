@@ -46,8 +46,8 @@ function App() {
     setFilteredExpenseList(updateList);
     localStorage.setItem("myExpenseListItems", JSON.stringify(updateList));
   };
-
-  const handleFilterCategories = (filterCategory: string) => {
+ 
+  const handleFilterCategories = (filterCategory: string) => { 
     if (filterCategory === "-1") {
       setFilteredExpenseList(expenseList);
     } else {
