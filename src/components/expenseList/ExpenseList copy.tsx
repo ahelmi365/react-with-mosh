@@ -3,7 +3,6 @@ import { IExpenseFormData } from "./../../App";
 import "./expenseList.css";
 import cancelIcon from "./../../assets/cancel.svg";
 
-
 interface IExpenseListProps {
   filteredExpenseList: IExpenseFormData[];
   handleDeleteItem: (itemId: number) => void;

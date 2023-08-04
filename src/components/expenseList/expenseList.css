@@ -1,0 +1,10 @@
+th[scope="col"] {
+  position: sticky;
+  top: 0px;
+  background: white;
+}
+
+.delete-all-items-th,
+.delete-item-td {
+  text-align: center;
+}

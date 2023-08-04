@@ -1,0 +1,10 @@
+
+
+
+@media screen and (min-width : 768px) {
+    .expense-form-container{
+        border-right: 1px solid #0d6efd;
+        /* background: red; */
+    }
+    
+}

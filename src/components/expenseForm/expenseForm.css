@@ -1,0 +1,12 @@
+.expense-form{
+  position: sticky;
+  top: 1rem;
+}
+
+th[scope="col"]{
+  vertical-align: middle;
+}
+
+.form-label{
+  font-weight: 500;
+}

@@ -3,7 +3,10 @@ import "./App.css";
 import ExpenseForm from "./components/expenseForm/ExpenseForm";
 import ExpenseList from "./components/expenseList/ExpenseList";
 import ExpenseFilter from "./components/expenseFilter/ExpenseFilter";
+import Posts from "./components/posts/Posts";
 
+const categories = ["Groceries", "Utilities", "Entertainment"];
+const currencies = ["EGP - E£", "USD - $"];
 export interface IExpenseFormData {
   id: number;
   description: string;
@@ -12,6 +15,7 @@ export interface IExpenseFormData {
 }
 
 function App() {
+  const [currency, setCurrency] = useState(currencies[0].split(" - ")[1]);
   const [expenseList, setExpenseList] = useState<IExpenseFormData[]>(
     JSON.parse(window.localStorage.getItem("myExpenseListItems") || "[]")
   );
@@ -46,31 +50,73 @@ function App() {
     setFilteredExpenseList(updateList);
     localStorage.setItem("myExpenseListItems", JSON.stringify(updateList));
   };
- 
-  const handleFilterCategories = (filterCategory: string) => { 
-    if (filterCategory === "-1") {
+
+  const handleDeleteAllItems = () => {
+    setFilteredExpenseList([]);
+    setExpenseList([]);
+  };
+  const handleSelectCategory = (filterCategory: string) => {
+    if (filterCategory === "-1" || filterCategory == "all") {
       setFilteredExpenseList(expenseList);
     } else {
       setFilteredExpenseList(
         expenseList.filter((item) => item.category === filterCategory)
       );
     }
-  }; 
+  };
   return (
     <div className="main">
       <div className="container">
         <div className="row">
-          <div className="col-sm-12 col-md-4 border-end border-warning">
-            <ExpenseForm updateExpenseList={updateExpenseList} />
+          <div className="col-sm-12 col-md-4 expense-form-container">
+            <ExpenseForm
+              updateExpenseList={updateExpenseList}
+              categories={categories}
+            />
           </div>
 
           <div className="col-sm-12 col-md-8">
-            <ExpenseFilter handleFilterCategories={handleFilterCategories} />
+            <div className="row">
+              <div className="col-8">
+                <ExpenseFilter
+                  handleSelectCategory={handleSelectCategory}
+                  categories={categories}
+                />
+              </div>
+              <div className="col-4 d-flex align-items-end">
+                <select
+                  className="form-select"
+                  aria-label="select currency"
+                  id="currency"
+                  defaultValue={"-1"}
+                  onChange={(e) => {
+                    setCurrency(e.target.value.split(" - ")[1]);
+                  }}
+                  required
+                >
+                  <option value="-1">select currency</option>
+
+                  {currencies.map((currency) => (
+                    <option key={currency} value={currency}>
+                      {currency}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
             <hr />
             <ExpenseList
               filteredExpenseList={filteredExpenseList}
               handleDeleteItem={handleDeleteItem}
+              handleDeleteAllItems={handleDeleteAllItems}
+              currency={currency}
             />
+          </div>
+        </div>
+        <hr />
+        <div className="row">
+          <div className="col-sm-12 col-md6">
+            <Posts/>
           </div>
         </div>
       </div>
