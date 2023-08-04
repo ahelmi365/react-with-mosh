@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios, { AxiosError } from "axios";
+import axios, { AxiosError, CanceledError } from "axios";
 
 interface IPost {
   userId: number;
@@ -10,31 +10,87 @@ interface IPost {
 const Posts = () => {
   const [posts, setPosts] = useState<IPost[]>([]);
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const deletePost = (id: number) => {
+    // const originalPosts = [...posts];
+    axios
+      .delete("https://jsonplaceholder.typicode.com/xposts/" + id)
+      .then(() => {
+        setPosts(posts.filter((post) => post.id !== id));
+      })
+      .catch((error) => {
+        setError(error.message);
+        // setPosts(originalPosts);
+      });
+  };
 
   useEffect(() => {
-    const getData = async () => {
-      try {
-        const response = await axios.get<IPost[]>(
-          "https://jsonplaceholder.typicode.com/posts"
-        );
+    // 1. using async-await
+    // const getData = async () => {
+    //   try {
+    //     const response = await axios.get<IPost[]>(
+    //       "https://jsonplaceholder.typicode.com/posts"
+    //     );
+    //     setPosts(response.data);
+    //   } catch (error) {
+    //     setError((error as AxiosError).message);
+    //   }
+    // };
+    // getData();
+
+    // 2. using .then().cathc()
+    const controller = new AbortController();
+    setIsLoading(true);
+    axios
+      .get("https://jsonplaceholder.typicode.com/posts", {
+        signal: controller.signal,
+      })
+      .then((response) => {
         setPosts(response.data);
-      } catch (error) {
-        setError((error as AxiosError).message);
-      }
+      })
+      .catch((error) => {
+        if (error instanceof CanceledError) return;
+        setError(error.message);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+
+    // cleanup function
+    return () => {
+      console.log("cleanup");
+      controller.abort();
+      setPosts([]);
+      setError("");
+      return;
     };
-    getData();
   }, []);
   return (
     <div>
-      {error ? (
-        <p className="text-danger">{error}</p>
-      ) : (
-        <ul>
-          {posts.map((post: IPost) => (
-            <li key={post.id}>{post.title}</li>
-          ))}
-        </ul>
+      {error && <p className="text-danger">{error}</p>}
+      {isLoading && (
+        <div className="w-100 text-center">
+          <div className="spinner-border text-center text-primary"></div>
+        </div>
       )}
+      <ul className="list-group">
+        {posts.map((post: IPost) => (
+          <li
+            key={post.id}
+            className="list-group-item d-flex justify-content-between"
+          >
+            {post.id}. {post.title}
+            <button
+              className="btn btn-outline-danger"
+              key={post.id}
+              onClick={() => deletePost(post.id)}
+            >
+              Delete
+            </button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
