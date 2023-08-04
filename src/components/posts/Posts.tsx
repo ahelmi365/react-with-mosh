@@ -3,12 +3,15 @@
 import React, { useEffect, useState } from "react";
 import { CanceledError } from "../../services/apiClient";
 import postService, { IPost } from "../../services/postService";
+import usePosts from "../../hooks/usePosts";
 
 const Posts = () => {
   //states
-  const [posts, setPosts] = useState<IPost[]>([]);
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  // const [posts, setPosts] = useState<IPost[]>([]);
+  // const [error, setError] = useState("");
+  // const [isLoading, setIsLoading] = useState(false);
+  const { posts, error, isLoading, setPosts, setError, setIsLoading } =
+    usePosts();
 
   // functions:
   // delete post
@@ -58,25 +61,25 @@ const Posts = () => {
       });
   };
   // useeffects:
-  useEffect(() => {
-    setIsLoading(true);
+  // useEffect(() => {
+  //   setIsLoading(true);
 
-    const { request, cancel } = postService.getAll<IPost>();
-    request
-      .then((response) => {
-        setPosts(response.data);
-      })
-      .catch((error) => {
-        if (error instanceof CanceledError) return;
-        setError(error.message);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+  //   const { request, cancel } = postService.getAll<IPost>();
+  //   request
+  //     .then((response) => {
+  //       setPosts(response.data);
+  //     })
+  //     .catch((error) => {
+  //       if (error instanceof CanceledError) return;
+  //       setError(error.message);
+  //     })
+  //     .finally(() => {
+  //       setIsLoading(false);
+  //     });
 
-    // cleanup function
-    return () => cancel();
-  }, []);
+  //   // cleanup function
+  //   return () => cancel();
+  // }, []);
   return (
     <div>
       <button className="btn btn-primary mb-3" onClick={handleAddPost}>

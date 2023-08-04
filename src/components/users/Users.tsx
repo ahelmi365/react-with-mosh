@@ -28,7 +28,7 @@ const Users = () => {
       .then((response) => setUsers(response.data))
       .catch((error) => console.log(error.message));
     return () => cancel();
-  }, [users]);
+  }, []);
   return (
     <div>
       <button className="btn btn-primary mb-3" onClick={() => handleGetUsers()}>

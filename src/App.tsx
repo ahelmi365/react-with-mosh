@@ -117,7 +117,7 @@ function App() {
         <hr />
         <div className="row">
           <div className="col-sm-12 col-md6">
-            {/* <Posts/> */}
+            <Posts/>
           </div>
         </div>
         <hr />
