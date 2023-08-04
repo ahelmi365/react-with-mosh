@@ -25,6 +25,24 @@ const Posts = () => {
       });
   };
 
+  const addPost = () => {
+    const newPost = {
+      userId: 0,
+      id: 0,
+      title: "new post",
+      body: "new post body",
+    };
+
+    axios
+      .post("https://jsonplaceholder.typicode.com/posts", newPost)
+      .then(({ data: savedPost }) => {
+        setPosts([savedPost, ...posts]);
+      })
+      .catch((error) => {
+        setError(error.message);
+      });
+  };
+
   useEffect(() => {
     // 1. using async-await
     // const getData = async () => {
@@ -68,6 +86,9 @@ const Posts = () => {
   }, []);
   return (
     <div>
+      <button className="btn btn-primary mb-3" onClick={addPost}>
+        Add Usre
+      </button>
       {error && <p className="text-danger">{error}</p>}
       {isLoading && (
         <div className="w-100 text-center">
