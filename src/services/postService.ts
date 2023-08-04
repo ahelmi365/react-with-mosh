@@ -1,5 +1,4 @@
-import apiClient from "./apiClient";
-// interfaces:
+import createHTTPService from "./httpService";
 export interface IPost {
   userId: number;
   id: number;
@@ -7,33 +6,5 @@ export interface IPost {
   body: string;
 }
 
-class PostService {
-  // get all posts
-  getAllPosts() {
-    const controller = new AbortController();
-    const request = apiClient.get<IPost[]>("/posts", {
-      signal: controller.signal,
-    });
-
-    return { request, cancel: () => controller.abort() };
-  }
-
-  // delete post
-  deletePost(id: number) {
-    return apiClient.delete("/posts/" + id);
-  }
-
-  // addpost
-  addPost(newPost:IPost) {
-    return apiClient.post("/posts", newPost);
-  }
-
-  // updatePost
-  updatePost(post: IPost) {
-    return apiClient.patch("/posts/" + post.id, {
-      title: post.title + "!!!",
-    });
-  }
-}
-
-export default new PostService();
+const postService = createHTTPService("posts");
+export default postService;

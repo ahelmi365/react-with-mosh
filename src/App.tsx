@@ -4,6 +4,7 @@ import ExpenseForm from "./components/expenseForm/ExpenseForm";
 import ExpenseList from "./components/expenseList/ExpenseList";
 import ExpenseFilter from "./components/expenseFilter/ExpenseFilter";
 import Posts from "./components/posts/Posts";
+import Users from "./components/users/Users";
 
 const categories = ["Groceries", "Utilities", "Entertainment"];
 const currencies = ["EGP - E£", "USD - $"];
@@ -116,7 +117,13 @@ function App() {
         <hr />
         <div className="row">
           <div className="col-sm-12 col-md6">
-            <Posts/>
+            {/* <Posts/> */}
+          </div>
+        </div>
+        <hr />
+        <div className="row">
+          <div className="col-sm-12 col-md6">
+            <Users/>
           </div>
         </div>
       </div>

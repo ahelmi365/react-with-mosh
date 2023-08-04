@@ -1,7 +1,7 @@
 // imports
 
 import React, { useEffect, useState } from "react";
-import  { CanceledError } from "../../services/apiClient";
+import { CanceledError } from "../../services/apiClient";
 import postService, { IPost } from "../../services/postService";
 
 const Posts = () => {
@@ -15,7 +15,7 @@ const Posts = () => {
   const handleDeletePost = (id: number) => {
     // const originalPosts = [...posts];
     postService
-      .deletePost(id)
+      .delete(id)
       .then(() => {
         setPosts(posts.filter((post) => post.id !== id));
       })
@@ -35,7 +35,7 @@ const Posts = () => {
     };
 
     postService
-      .addPost(newPost)
+      .create<IPost>(newPost)
       .then(({ data: savedPost }) => {
         setPosts([savedPost, ...posts]);
       })
@@ -47,7 +47,7 @@ const Posts = () => {
   // handleUpdatePost
   const handleUpdatePost = (post: IPost) => {
     postService
-      .updatePost(post)
+      .update<IPost>(post)
       .then(({ data: updatedPost }) => {
         setPosts(
           posts.map((post) => (post.id === updatedPost.id ? updatedPost : post))
@@ -61,7 +61,7 @@ const Posts = () => {
   useEffect(() => {
     setIsLoading(true);
 
-    const { request, cancel } = postService.getAllPosts();
+    const { request, cancel } = postService.getAll<IPost>();
     request
       .then((response) => {
         setPosts(response.data);
