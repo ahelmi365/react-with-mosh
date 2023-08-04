@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from "react";
-import axios, { AxiosError, CanceledError } from "axios";
+// imports
 
-interface IPost {
-  userId: number;
-  id: number;
-  title: string;
-  body: string;
-}
+import React, { useEffect, useState } from "react";
+import  { CanceledError } from "../../services/apiClient";
+import postService, { IPost } from "../../services/postService";
+
 const Posts = () => {
+  //states
   const [posts, setPosts] = useState<IPost[]>([]);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const deletePost = (id: number) => {
+  // functions:
+  // delete post
+  const handleDeletePost = (id: number) => {
     // const originalPosts = [...posts];
-    axios
-      .delete("https://jsonplaceholder.typicode.com/xposts/" + id)
+    postService
+      .deletePost(id)
       .then(() => {
         setPosts(posts.filter((post) => post.id !== id));
       })
@@ -25,7 +25,8 @@ const Posts = () => {
       });
   };
 
-  const addPost = () => {
+  // handleAddPost
+  const handleAddPost = () => {
     const newPost = {
       userId: 0,
       id: 0,
@@ -33,8 +34,8 @@ const Posts = () => {
       body: "new post body",
     };
 
-    axios
-      .post("https://jsonplaceholder.typicode.com/posts", newPost)
+    postService
+      .addPost(newPost)
       .then(({ data: savedPost }) => {
         setPosts([savedPost, ...posts]);
       })
@@ -43,27 +44,25 @@ const Posts = () => {
       });
   };
 
-  useEffect(() => {
-    // 1. using async-await
-    // const getData = async () => {
-    //   try {
-    //     const response = await axios.get<IPost[]>(
-    //       "https://jsonplaceholder.typicode.com/posts"
-    //     );
-    //     setPosts(response.data);
-    //   } catch (error) {
-    //     setError((error as AxiosError).message);
-    //   }
-    // };
-    // getData();
-
-    // 2. using .then().cathc()
-    const controller = new AbortController();
-    setIsLoading(true);
-    axios
-      .get("https://jsonplaceholder.typicode.com/posts", {
-        signal: controller.signal,
+  // handleUpdatePost
+  const handleUpdatePost = (post: IPost) => {
+    postService
+      .updatePost(post)
+      .then(({ data: updatedPost }) => {
+        setPosts(
+          posts.map((post) => (post.id === updatedPost.id ? updatedPost : post))
+        );
       })
+      .catch(({ message }) => {
+        setError(message);
+      });
+  };
+  // useeffects:
+  useEffect(() => {
+    setIsLoading(true);
+
+    const { request, cancel } = postService.getAllPosts();
+    request
       .then((response) => {
         setPosts(response.data);
       })
@@ -76,17 +75,11 @@ const Posts = () => {
       });
 
     // cleanup function
-    return () => {
-      console.log("cleanup");
-      controller.abort();
-      setPosts([]);
-      setError("");
-      return;
-    };
+    return () => cancel();
   }, []);
   return (
     <div>
-      <button className="btn btn-primary mb-3" onClick={addPost}>
+      <button className="btn btn-primary mb-3" onClick={handleAddPost}>
         Add Usre
       </button>
       {error && <p className="text-danger">{error}</p>}
@@ -102,13 +95,21 @@ const Posts = () => {
             className="list-group-item d-flex justify-content-between"
           >
             {post.id}. {post.title}
-            <button
-              className="btn btn-outline-danger"
-              key={post.id}
-              onClick={() => deletePost(post.id)}
-            >
-              Delete
-            </button>
+            <div className="control-btns d-flex gap-3">
+              <button
+                className="btn btn-warning"
+                onClick={() => handleUpdatePost(post)}
+              >
+                Update
+              </button>
+              <button
+                className="btn btn-outline-danger"
+                key={post.id}
+                onClick={() => handleDeletePost(post.id)}
+              >
+                Delete
+              </button>
+            </div>
           </li>
         ))}
       </ul>
