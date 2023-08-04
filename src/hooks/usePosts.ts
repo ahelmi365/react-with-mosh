@@ -29,7 +29,7 @@ const usePosts = () => {
     return () => cancel();
   }, []);
 
-  return { posts, error, isLoading, setPosts, setError, setIsLoading };
+  return { posts, error, isLoading, setPosts, setError };
 };
 
 export default usePosts;

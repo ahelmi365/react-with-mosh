@@ -117,15 +117,15 @@ function App() {
         <hr />
         <div className="row">
           <div className="col-sm-12 col-md6">
-            <Posts/>
+            <Users />
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-sm-12 col-md6">
+            <Posts />
           </div>
         </div>
         <hr />
-        <div className="row">
-          <div className="col-sm-12 col-md6">
-            <Users/>
-          </div>
-        </div>
       </div>
     </div>
   );
